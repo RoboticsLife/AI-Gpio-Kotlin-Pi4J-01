@@ -22,4 +22,12 @@ object InternetConnection {
             .addConverterFactory(JacksonConverterFactory.create())
             .build()
     }
+
+    fun getAINetworkClient(baseUrl: String): Retrofit {
+        return Retrofit.Builder()
+            .client(okHttpClient ?: getOkHttpClient())
+            .baseUrl(baseUrl)
+            .addConverterFactory(JacksonConverterFactory.create())
+            .build()
+    }
  }
