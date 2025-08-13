@@ -30,68 +30,38 @@ import kotlin.math.abs
 //Hardware
 lateinit var pi4j: Context
 lateinit var console: Console
-lateinit var configuration: Configuration
-lateinit var avatar: Avatar
-lateinit var brain: Brain
+//lateinit var configuration: Configuration
+//lateinit var avatar: Avatar
+//lateinit var brain: Brain
 var city = "Toronto"
 
-fun main(args: Array<String>) {
+suspend fun main(args: Array<String>) {
 
     init()
     collectData()
 
     //Print out
     console.println(pi4j.boardInfo().boardModel)
-    println(configuration)
 
     val weatherNetworkService = WeatherNetworkService()
 
-    if (avatar.type == HardwareTypes.Type.CIRCUIT_BOARD) {
+    weatherNetworkService.getWeatherByName(city)
 
-        (avatar.body as CircuitBoard).displayPrint(string = "Press the button to get weather forecast")
-
-
-        //TODO tests
-
-        val positionSensorJob = CoroutineScope(Job() + Dispatchers.IO).launch {
-            while (true) {
-                delay(1000)
-                val position = (avatar.body as CircuitBoard).getPositionData(0)
-            }
-            //delay(1000)
-            //val position = (avatar.body as CircuitBoard).getPositionData(0)
-            //println(position)
-            //delay(1000)
-            //println((avatar.body as CircuitBoard).getPositionData(0))
-        }
-
-
-
-        (avatar.body as CircuitBoard).addButtonListeners(
-            buttonPosition = 0,
-            actionHigh = {},
-            actionLow = {
-                weatherNetworkService.getWeatherByName(city)
-                if (!(avatar.body as CircuitBoard).getDistanceMeasuringState()) {
-                    (avatar.body as CircuitBoard).startDistanceMeasuring(periodInMillis = 1000)
-                    brain.startTrackDevice(parameterName = Brain.PARAMETER_SENSOR_DISTANCE, devicePosition = null, loggingPeriodInMillis = 5000)
-                } else {
-                    (avatar.body as CircuitBoard).stopDistanceMeasuring()
-                    brain.stopTrackDevice(Brain.PARAMETER_SENSOR_DISTANCE)
-                    brain.readFromMemory(DatabaseInitializer.DB_TABLE_NAME_DISTANCE_SENSORS, null)
-                }
-
-            }
-        )
+    //add infinite loop for java app running
+    coroutineScope {
+        println("Start infinite main thread")
+        delay(Long.MAX_VALUE)
+        println("End infinite main thread")
     }
+
 }
 
 fun init() {
     pi4j = Injector.getPi4j()
     console = Injector.getPi4jConsole()
-    configuration = Injector.getRuntimeConfiguration().getConfiguration("lesson13-mpu6050-i2c.json")
-    avatar = AvatarBuilder(pi4j, configuration).build()
-    brain = BrainBuilder(avatar = avatar).build()
+    //configuration = Injector.getRuntimeConfiguration().getConfiguration("lesson13-mpu6050-i2c.json")
+    //avatar = AvatarBuilder(pi4j, configuration).build()
+    //brain = BrainBuilder(avatar = avatar).build()
 }
 
 fun collectData() {
@@ -100,40 +70,9 @@ fun collectData() {
         NetworkEmitters.weatherEmitter.collect { weather ->
             if (weather.isSuccessful && weather.weatherResponse != null) {
                 println(weather)
-                val temp = weather.weatherResponse.main?.temp?.toInt()
-                (avatar.body as CircuitBoard).displayPrint(string = "The temperature in $city ${temp.toString()} C")
 
-                CoroutineScope(Dispatchers.IO).launch {
-                    //if temp = 0 -> blink 2 leds once
-                    if (temp != null && temp == 0) {
-                        (avatar.body as CircuitBoard).ledOn(0, 1000L)
-                        (avatar.body as CircuitBoard).ledOn(1, 1000L)
-                    } else if (temp != null && temp > 0) {
-                        //if temp > 0 -> blink green led $temp times
-                        for (i in 1..temp) {
-                            (avatar.body as CircuitBoard).ledOn(0, 1000L)
-                            delay(2000)
-                        }
-                    } else if (temp != null && temp < 0) {
-                        //if temp > 0 -> blink green led $temp times
-                        for (i in 1..abs(temp)) {
-                            (avatar.body as CircuitBoard).ledOn(1, 1000L)
-                            delay(2000)
-                        }
-                    }
-                }
             }
 
-        }
-    }
-
-    val jobDistanceCollector = CoroutineScope(Job() + Dispatchers.IO).launch {
-        DistanceEmitters.distanceSensor.collect { distance ->
-            if (distance.toCm(DistanceSensor.NAME_HARDWARE_MODEL_HC_SR_04) == Float.POSITIVE_INFINITY) {
-                println("Distance is out of measuring")
-            } else {
-                println("Distance = ${distance.toCm()} cm")
-            }
         }
     }
 }
