@@ -23,7 +23,7 @@ class DisplayLCD1602(pi4j: Context, displayConfig: Configuration.DisplayConfig):
         return true
     }
 
-    override fun initDevice(i2C: I2C) {
+    override fun initDevice(i2C: I2C?) {
         sendLcdTwoPartsCommand(0x03.toByte())
         sendLcdTwoPartsCommand(0x03.toByte())
         sendLcdTwoPartsCommand(0x03.toByte())

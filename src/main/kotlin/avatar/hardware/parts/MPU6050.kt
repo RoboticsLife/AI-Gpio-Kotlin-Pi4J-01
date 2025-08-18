@@ -74,7 +74,7 @@ class MPU6050(pi4j: Context, positionSensorConfig: Configuration.PositionSensorC
 
 
 
-    override fun initDevice(i2C: I2C) {
+    override fun initDevice(i2C: I2C?) {
         // 1. waking up the MPU6050 (0x00 = 0000 0000) as it starts in sleep mode.
         updateRegisterValue(MPU6050_REG_ADDR_PWR_MGMT_1, 0x00)
 
@@ -256,12 +256,15 @@ class MPU6050(pi4j: Context, positionSensorConfig: Configuration.PositionSensorC
         writeRegister(address, value)
 
         // we check that the value of the register has been updated
-        val readRegisterValue: Int = readRegister(address)
+        val readRegisterValue: Int? = readRegister(address)
 
-        if (readRegisterValue != value) throw Exception(
-            "Error when updating the MPU6050 register value (register: " +
-                    address + ", value: " + value + ")"
-        )
+        if (readRegisterValue != value) {
+            //throw Exception(
+            //"Error when updating the MPU6050 register value (register: " +
+            //        address + ", value: " + value + ")"
+            //)
+            //TODO add safe Exception logic
+        }
     }
 
 
@@ -291,12 +294,12 @@ class MPU6050(pi4j: Context, positionSensorConfig: Configuration.PositionSensorC
      * registers, with a two's complement representation.
      */
     private fun readWord2C(registerAddress: Int): Int {
-        var value: Int = readRegisterValue(registerAddress)
-        value = value shl 8
-        value += readRegisterValue(registerAddress + 1)
+        var value: Int? = readRegisterValue(registerAddress)
+        value = value?.shl(8)
+        readRegisterValue(registerAddress + 1)?.let { value = value?.plus(it) }
 
-        if (value >= 0x8000) value = -(65536 - value)
-        return value
+        value?.let { if (it >= 0x8000) value = -(65536 - value) }
+        return value ?: 0
     }
 
     /**
@@ -304,7 +307,7 @@ class MPU6050(pi4j: Context, positionSensorConfig: Configuration.PositionSensorC
      * @param registerAddress the address of the register to read.
      * @return the int representation of the content of the register.
      */
-    private fun readRegisterValue(registerAddress: Int): Int {
+    private fun readRegisterValue(registerAddress: Int): Int? {
         return readUnsignedRegisterValue(registerAddress)
     }
 

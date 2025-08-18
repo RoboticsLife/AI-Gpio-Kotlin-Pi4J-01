@@ -8,8 +8,8 @@ import brain.utils.filteredHardwareModel
 
 interface DistanceSensor {
 
-    var triggerOutput: DigitalOutput
-    var echoInput: DigitalInput
+    var triggerOutput: DigitalOutput?
+    var echoInput: DigitalInput?
     var isActive: Boolean
 
     var threadScopeSensorRequest: Job?

@@ -9,38 +9,44 @@ import java.time.Duration
 
 abstract class I2CDevice(pi4j: Context, i2CDeviceConfiguration: I2CDeviceConfiguration) {
 
-    private var i2c: I2C = pi4j.create(
-        I2C.newConfigBuilder(pi4j)
-            .id("I2C- ${i2CDeviceConfiguration.hardwareModel} BUS- ${i2CDeviceConfiguration.address}")
-            .name(i2CDeviceConfiguration.name)
-            .bus(i2CDeviceConfiguration.pinSDA)
-            .device(i2CDeviceConfiguration.address)
-            .build()
-    )
+
+    private var i2c: I2C? = try {
+
+        pi4j.create(
+            I2C.newConfigBuilder(pi4j)
+                .id("I2C- ${i2CDeviceConfiguration.hardwareModel} BUS- ${i2CDeviceConfiguration.address}")
+                .name(i2CDeviceConfiguration.name)
+                .bus(i2CDeviceConfiguration.pinSDA)
+                .device(i2CDeviceConfiguration.address)
+                .build()
+        )
+    } catch (e: Exception) {
+        null
+    }
 
     init {
         this.initDevice(this.i2c)
     }
 
-    abstract fun initDevice(i2C: I2C)
+    abstract fun initDevice(i2C: I2C?)
 
     abstract fun reset()
 
     protected fun sendCommand(cmd: Byte) {
-        i2c.write(cmd)
+        i2c?.write(cmd)
         delay(Duration.ofNanos(100000))
     }
 
-    protected fun readRegister(register: Int): Int {
-        return i2c.readRegisterWord(register)
+    protected fun readRegister(register: Int): Int? {
+        return i2c?.readRegisterWord(register)
     }
 
     protected fun writeRegister(register: Int, config: Int) {
-        i2c.writeRegisterWord(register, config)
+        i2c?.writeRegisterWord(register, config)
     }
 
     protected fun write(data: Byte) {
-        i2c.write(data)
+        i2c?.write(data)
     }
 
     /**
@@ -53,10 +59,12 @@ abstract class I2CDevice(pi4j: Context, i2CDeviceConfiguration: I2CDeviceConfigu
      * @see com.pi4j.io.i2c.I2CDevice.read
      * @see I2CComponent.readSignedRegisterValue
      */
-    fun readUnsignedRegisterValue(reg: Int): Int {
+    fun readUnsignedRegisterValue(reg: Int): Int? {
         try {
-            val result: Int = i2c.readRegisterWord(reg)
-            if (result < 0) println("Error when reading i2c register content. Error=$result")
+            val result: Int? = i2c?.readRegisterWord(reg)
+            if (result != null) {
+                if (result < 0) println("Error when reading i2c register content. Error=$result")
+            }
             return result
         } catch (e: IOException) {
             throw Exception(

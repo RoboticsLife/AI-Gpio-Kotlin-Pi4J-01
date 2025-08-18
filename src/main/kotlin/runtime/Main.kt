@@ -30,9 +30,9 @@ import kotlin.math.abs
 //Hardware
 lateinit var pi4j: Context
 lateinit var console: Console
-//lateinit var configuration: Configuration
-//lateinit var avatar: Avatar
-//lateinit var brain: Brain
+lateinit var configuration: Configuration
+lateinit var avatar: Avatar
+lateinit var brain: Brain
 var city = "Toronto"
 
 suspend fun main(args: Array<String>) {
@@ -59,9 +59,9 @@ suspend fun main(args: Array<String>) {
 fun init() {
     pi4j = Injector.getPi4j()
     console = Injector.getPi4jConsole()
-    //configuration = Injector.getRuntimeConfiguration().getConfiguration("lesson13-mpu6050-i2c.json")
-    //avatar = AvatarBuilder(pi4j, configuration).build()
-    //brain = BrainBuilder(avatar = avatar).build()
+    configuration = Injector.getRuntimeConfiguration().getConfiguration("lesson13-mpu6050-i2c.json")
+    avatar = AvatarBuilder(pi4j, configuration).build()
+    brain = BrainBuilder(avatar = avatar).build()
 }
 
 fun collectData() {

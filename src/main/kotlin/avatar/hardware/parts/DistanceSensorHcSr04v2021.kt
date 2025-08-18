@@ -11,8 +11,8 @@ import brain.data.local.Configuration
 
 class DistanceSensorHcSr04v2021(pi4j: Context, distanceSensorConfig: Configuration.DistanceSensorConfig):
     DistanceSensor {
-    override lateinit var triggerOutput: DigitalOutput
-    override lateinit var echoInput: DigitalInput
+    override var triggerOutput: DigitalOutput? = null
+    override var echoInput: DigitalInput? = null
     override var isActive: Boolean = false
     override var threadScopeSensorRequest: Job? = null
 
@@ -21,38 +21,58 @@ class DistanceSensorHcSr04v2021(pi4j: Context, distanceSensorConfig: Configurati
     }
 
     private fun buildSensor(pi4j: Context, distanceSensorConfig: Configuration.DistanceSensorConfig) {
-        if (distanceSensorConfig.pinTrigger != null) setTriggerOutput(pi4j, distanceSensorConfig.pinTrigger) else return
-        if (distanceSensorConfig.pinEcho != null) setEchoInput(pi4j, distanceSensorConfig.pinEcho) else return
+        try {
+
+            if (distanceSensorConfig.pinTrigger != null) setTriggerOutput(
+                pi4j,
+                distanceSensorConfig.pinTrigger
+            ) else return
+            if (distanceSensorConfig.pinEcho != null) setEchoInput(pi4j, distanceSensorConfig.pinEcho) else return
+        } catch (e: Exception) {
+            //TODO emit error to a specific emitter (create it)
+        }
     }
 
     private fun setTriggerOutput(pi4j: Context, pin: Int) {
-        val params = DigitalOutput.newConfigBuilder(pi4j)
-            .id("BCM$pin")
-            .name("$NAME_HARDWARE_MODEL ($NAME_HARDWARE_VERSION) #$pin")
-            .address(pin)
-            .initial(DigitalState.LOW)
+        try {
 
-        triggerOutput = pi4j.create(params)
+
+            val params = DigitalOutput.newConfigBuilder(pi4j)
+                .id("BCM$pin")
+                .name("$NAME_HARDWARE_MODEL ($NAME_HARDWARE_VERSION) #$pin")
+                .address(pin)
+                .initial(DigitalState.LOW)
+
+            triggerOutput = pi4j.create(params)
+        } catch (e: Exception) {
+            //TODO emit error to a specific emitter (create it)
+        }
     }
 
     private fun setEchoInput(pi4j: Context, pin: Int) {
-        val params = DigitalInput.newConfigBuilder(pi4j)
-            .id("BCM$pin")
-            .name("$NAME_HARDWARE_MODEL ($NAME_HARDWARE_VERSION) #$pin")
-            .address(pin)
-            .pull(PullResistance.PULL_DOWN)
-            .build()
+        try {
 
-        echoInput = pi4j.create(params)
+
+            val params = DigitalInput.newConfigBuilder(pi4j)
+                .id("BCM$pin")
+                .name("$NAME_HARDWARE_MODEL ($NAME_HARDWARE_VERSION) #$pin")
+                .address(pin)
+                .pull(PullResistance.PULL_DOWN)
+                .build()
+
+            echoInput = pi4j.create(params)
+        } catch (e: Exception) {
+            //TODO emit error to a specific emitter (create it)
+        }
     }
 
 
     override fun triggerOutputHigh() {
-        triggerOutput.setState(1)
+        triggerOutput?.setState(1)
     }
 
     override fun triggerOutputLow() {
-        triggerOutput.setState(0)
+        triggerOutput?.setState(0)
     }
 
     companion object {

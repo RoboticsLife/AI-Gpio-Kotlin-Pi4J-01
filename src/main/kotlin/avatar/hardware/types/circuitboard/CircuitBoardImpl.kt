@@ -174,9 +174,9 @@ class CircuitBoardImpl(private val pi4J: Context, private val configuration: Con
                 TimeUnit.MICROSECONDS.sleep(10)
                 body.distanceSensors[sensorPosition].triggerOutputLow()
 
-                while (body.distanceSensors[sensorPosition].echoInput.isLow) {}
+                while (body.distanceSensors[sensorPosition].echoInput?.isLow == true) {}
                 val echoLowNanoTime = System.nanoTime()
-                while (body.distanceSensors[sensorPosition].echoInput.isHigh) {}
+                while (body.distanceSensors[sensorPosition].echoInput?.isHigh == true) {}
                 val echoHighNanoTime = System.nanoTime()
 
                 DistanceEmitters.emitDistanceData(
