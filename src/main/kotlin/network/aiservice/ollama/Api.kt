@@ -9,6 +9,6 @@ import retrofit2.http.Path
 
 interface Api {
 
-    @POST("/{routeUrl}")
+    @POST("{routeUrl}")
     fun getAIResponse(@Path("routeUrl") routeUrl: String, @Body ollamaGenerateRequest: OllamaGenerateRequest): Call<OllamaGenerateResponse>
 }

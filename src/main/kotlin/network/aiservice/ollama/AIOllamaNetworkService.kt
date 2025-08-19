@@ -2,14 +2,14 @@ package network.aiservice.ollama
 
 import brain.ai.data.local.AIConfiguration
 import brain.ai.data.local.AIFlowDataModel
-import brain.data.local.WeatherData
 import brain.emitters.NetworkEmitters
 import network.InternetConnection
+import network.aiservice.AIService
 import network.aiservice.data.AbstractRequest
 import network.aiservice.ollama.data.OllamaGenerateRequest
 import runtime.setup.Settings
 
-class AIOllamaNetworkService(aiConfiguration: AIConfiguration) {
+class AIOllamaNetworkService(aiConfiguration: AIConfiguration): AIService {
 
     private val aiConfig: AIConfiguration = aiConfiguration
     private val client = InternetConnection.getWeatherClient(aiConfiguration.aiServerBaseURL.toString())
@@ -28,8 +28,12 @@ class AIOllamaNetworkService(aiConfiguration: AIConfiguration) {
     }
 
     private fun generateAITextRequest(text: String): OllamaGenerateRequest {
-        //TODO
-        return OllamaGenerateRequest()
+
+        return OllamaGenerateRequest(
+            model = aiConfig.aiModel,
+            prompt = text,
+            stream = false
+            )
 
     }
 
@@ -38,8 +42,10 @@ class AIOllamaNetworkService(aiConfiguration: AIConfiguration) {
     }
 
 
-    fun askAI(question: String) {
+    override fun askAI(question: String) {
         verifyAIFlow()
+
+        println("ASKING!!!")
 
         val ollamaGenerateRequest = generateAITextRequest(question)
         val response = apiService.getAIResponse(
@@ -47,23 +53,24 @@ class AIOllamaNetworkService(aiConfiguration: AIConfiguration) {
             ollamaGenerateRequest = ollamaGenerateRequest
             ).execute()
 
-        NetworkEmitters.emitAIResponse()
+        println(response.body()?.response.toString())
+       // NetworkEmitters.emitAIResponse()
 
-        NetworkEmitters.emitWeatherResponse(
-            WeatherData(
-                weatherResponse = if (response.isSuccessful) response.body() else null,
-                isSuccessful = response.isSuccessful,
-                httpCode = response.code(),
-                message = response.message()
-            )
-        )
+      //  NetworkEmitters.emitWeatherResponse(
+        //    WeatherData(
+          //      weatherResponse = if (response.isSuccessful) response.body() else null,
+            //    isSuccessful = response.isSuccessful,
+              //  httpCode = response.code(),
+              //  message = response.message()
+           // )
+       // )
     }
 
-    fun imageClassification(decodedImageBase64String: String) {
+    override fun imageClassification(decodedImageBase64String: String) {
         //TODO
     }
 
-    fun setAITextResponseLengthLimit() {
+    override fun setAITextResponseLengthLimit(wordsLength: Int) {
         //TODO
     }
 }

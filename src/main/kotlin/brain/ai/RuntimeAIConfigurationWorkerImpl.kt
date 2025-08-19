@@ -15,7 +15,7 @@ class RuntimeAIConfigurationWorkerImpl: RuntimeAIConfigurationWorker {
         try {
             var jsonString = javaClass.classLoader.getResource(fileName)?.readText()
             if (!jsonString.isNullOrEmpty()) {
-                jsonString = javaClass.classLoader.getResource(Settings.DEFAULT_AI_CONFIG_FILE_NAME)?.readText()
+                jsonString = javaClass.classLoader.getResource(Settings.AI_DEFAULT_CONFIG_FILE_NAME)?.readText()
             }
             val jsonTextConfig: AIConfiguration = mapper.readValue(jsonString, AIConfiguration::class.java)
             return jsonTextConfig

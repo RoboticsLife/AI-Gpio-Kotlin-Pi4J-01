@@ -40,6 +40,8 @@ suspend fun main(args: Array<String>) {
 
     weatherNetworkService.getWeatherByName(city)
 
+    brain.askAI("How do you feel today?")
+
     //add infinite loop for java app running
     coroutineScope {
         println("Start infinite main thread")

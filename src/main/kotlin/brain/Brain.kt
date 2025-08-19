@@ -6,16 +6,20 @@ import brain.data.remote.DistanceSensor
 import brain.emitters.DistanceEmitters
 import brain.utils.toCm
 import kotlinx.coroutines.*
+import network.aiservice.AIService
+import network.aiservice.ollama.AIOllamaNetworkService
 import network.databases.DatabaseConnector
 import network.databases.DatabaseInitializer
 import runtime.setup.Injector
 import runtime.setup.Settings
+import runtime.setup.Settings.AI_REMOTE_CONNECTION_TYPE
 
 class Brain {
 
     private lateinit var avatar: Avatar
     private lateinit var dataBaseFirebaseFirestore: DatabaseConnector
     private lateinit var aiConfig: AIConfiguration
+    private lateinit var aiService: AIService
 
     //Threads
     private var devicesThreadScopeArray: MutableMap<String, Job?> = mutableMapOf()
@@ -37,9 +41,16 @@ class Brain {
 
     private fun initAI() {
         val aiConfigFileName =
-            if (this.avatar.configuration?.customAiConfigName.isNullOrEmpty()) Settings.DEFAULT_AI_CONFIG_FILE_NAME
+            if (this.avatar.configuration?.customAiConfigName.isNullOrEmpty()) Settings.AI_DEFAULT_CONFIG_FILE_NAME
             else this.avatar.configuration?.customAiConfigName
         aiConfig = Injector.getRuntimeAIConfiguration().getAIConfiguration(aiConfigFileName.toString())
+
+        if (aiConfig.aiConnectionType == AI_REMOTE_CONNECTION_TYPE) {
+            aiService = AIOllamaNetworkService(aiConfig)
+        } else {
+            //TODO: provide local AI service
+            aiService = AIOllamaNetworkService(aiConfig)
+        }
     }
 
     fun readFromMemory(parameterName: String, key: Any?) {
@@ -62,6 +73,10 @@ class Brain {
         devicesThreadScopeArray["$parameterName${devicePosition.toString()}"]?.cancel()
         devicesThreadScopeArray["$parameterName${devicePosition.toString()}"] = null
         devicesThreadScopeArray.remove("$parameterName${devicePosition.toString()}")
+    }
+
+    fun askAI(question: String) {
+        aiService.askAI(question)
     }
 
 
