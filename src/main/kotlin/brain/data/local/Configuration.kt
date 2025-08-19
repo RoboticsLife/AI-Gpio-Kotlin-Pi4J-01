@@ -11,6 +11,7 @@ data class Configuration(
     val hardwareModelCode: Int? = null,
     val hardwareType: String? = null,
     val hardwareTypeCode: Int? = null,
+    val customAiConfigName: String? = null,
     val leds: List<LedConfig?>? = null,
     val buttons: List<ButtonConfig?>? = null,
     val buzzers: List<BuzzerConfig?>? = null,

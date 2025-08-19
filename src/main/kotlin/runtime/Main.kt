@@ -2,9 +2,6 @@ package org.example.runtime
 
 import avatar.Avatar
 import avatar.hardware.AvatarBuilder
-import avatar.hardware.HardwareTypes
-import avatar.hardware.parts.basecomponents.DistanceSensor
-import avatar.hardware.types.circuitboard.CircuitBoard
 import brain.Brain
 import brain.BrainBuilder
 import brain.emitters.NetworkEmitters
@@ -13,11 +10,7 @@ import com.pi4j.util.Console
 import kotlinx.coroutines.*
 import network.weatherservice.WeatherNetworkService
 import brain.data.local.Configuration
-import brain.emitters.DistanceEmitters
-import brain.utils.toCm
-import network.databases.DatabaseInitializer
 import runtime.setup.Injector
-import kotlin.math.abs
 
 
 /**
@@ -59,7 +52,7 @@ suspend fun main(args: Array<String>) {
 fun init() {
     pi4j = Injector.getPi4j()
     console = Injector.getPi4jConsole()
-    configuration = Injector.getRuntimeConfiguration().getConfiguration("lesson13-mpu6050-i2c.json")
+    configuration = Injector.getRuntimeConfiguration().getConfiguration("lesson01-ai.json")
     avatar = AvatarBuilder(pi4j, configuration).build()
     brain = BrainBuilder(avatar = avatar).build()
 }

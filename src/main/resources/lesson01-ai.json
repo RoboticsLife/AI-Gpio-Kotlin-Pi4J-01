@@ -1,11 +1,12 @@
 {
-  "configName": "lesson12-firebase-db",
-  "configDescription": "This is a configuration to plug in a I2C LED display",
+  "configName": "lesson01-ai",
+  "configDescription": "'gemma3:4b' model on macOS 15.6 and local AI model on Ollama server. Local network access to API",
   "configVersion": "1.0.0",
   "hardwareType": "circuitboard",
   "hardwareModel": "i2c",
   "hardwareTypeCode": 1,
   "hardwareModelCode": 1,
+  "customAiConfigName": "",
   "leds": [
     {
       "name": "green-led",

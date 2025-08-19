@@ -1,6 +1,7 @@
 package network.aiservice.ollama.data
 
 import com.fasterxml.jackson.annotation.JsonProperty
+import network.aiservice.data.AbstractRequest
 
 data class OllamaGenerateRequest(
     @JsonProperty("images")
@@ -13,7 +14,7 @@ data class OllamaGenerateRequest(
     val prompt: String? = null,
     @JsonProperty("stream")
     val stream: Boolean? = null
-) {
+): AbstractRequest() {
     data class Options(
         @JsonProperty("frequency_penalty")
         val frequencyPenalty: Double? = null,

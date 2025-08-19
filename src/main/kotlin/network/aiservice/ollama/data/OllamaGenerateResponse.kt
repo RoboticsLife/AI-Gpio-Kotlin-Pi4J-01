@@ -2,6 +2,7 @@ package network.aiservice.ollama.data
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties
 import com.fasterxml.jackson.annotation.JsonInclude
+import network.aiservice.data.AbstractResponse
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 @JsonInclude(JsonInclude.Include.NON_EMPTY)
@@ -18,4 +19,4 @@ data class OllamaGenerateResponse(
     val prompt_eval_duration: Long? = null,
     val response: String? = null,
     val total_duration: Long? = null
-)
+): AbstractResponse()

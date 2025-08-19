@@ -9,4 +9,5 @@ object Settings {
     const val DEFAULT_SDA_PIN = 1
     const val DEFAULT_SCL_PIN = 2
     const val CONNECTION_TYPE_I2C = "i2c"
+    const val DEFAULT_AI_CONFIG_FILE_NAME = "aiconfig.json"
 }

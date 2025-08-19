@@ -1,23 +1,28 @@
 package brain
 
 import avatar.Avatar
+import brain.ai.data.local.AIConfiguration
 import brain.data.remote.DistanceSensor
 import brain.emitters.DistanceEmitters
 import brain.utils.toCm
 import kotlinx.coroutines.*
 import network.databases.DatabaseConnector
 import network.databases.DatabaseInitializer
+import runtime.setup.Injector
+import runtime.setup.Settings
 
 class Brain {
 
     private lateinit var avatar: Avatar
     private lateinit var dataBaseFirebaseFirestore: DatabaseConnector
+    private lateinit var aiConfig: AIConfiguration
 
     //Threads
     private var devicesThreadScopeArray: MutableMap<String, Job?> = mutableMapOf()
 
     private fun init() {
         initDatabases()
+        initAI()
     }
 
     fun build(avatar: Avatar): Brain {
@@ -28,6 +33,13 @@ class Brain {
 
     private fun initDatabases() {
         dataBaseFirebaseFirestore = DatabaseConnector(type = DatabaseConnector.DatabaseTypes.FIREBASE_FIRESTORE_DB)
+    }
+
+    private fun initAI() {
+        val aiConfigFileName =
+            if (this.avatar.configuration?.customAiConfigName.isNullOrEmpty()) Settings.DEFAULT_AI_CONFIG_FILE_NAME
+            else this.avatar.configuration?.customAiConfigName
+        aiConfig = Injector.getRuntimeAIConfiguration().getAIConfiguration(aiConfigFileName.toString())
     }
 
     fun readFromMemory(parameterName: String, key: Any?) {
