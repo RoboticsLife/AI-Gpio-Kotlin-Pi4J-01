@@ -1,5 +1,6 @@
 package brain.emitters
 
+import brain.ai.data.local.AIFlowDataModel
 import brain.data.local.WeatherData
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -16,12 +17,18 @@ object NetworkEmitters {
     val weatherEmitter = _weatherEmitter.asSharedFlow()
 
     //AI
-    private val _aiEmitter = MutableStateFlow<String>("")
+    private val _aiEmitter = MutableStateFlow<AIFlowDataModel?>(null)
     val aiEmitter = _aiEmitter.asStateFlow()
 
     fun emitWeatherResponse(weatherData: WeatherData) {
         CoroutineScope(Dispatchers.IO).launch {
             _weatherEmitter.emit(weatherData)
+        }
+    }
+
+    fun emitAIResponse(aiFlowDataModel: AIFlowDataModel?) {
+        CoroutineScope(Dispatchers.IO).launch {
+            _aiEmitter.emit(aiFlowDataModel)
         }
     }
 

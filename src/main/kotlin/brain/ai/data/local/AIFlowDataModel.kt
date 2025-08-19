@@ -6,16 +6,18 @@ import network.aiservice.data.AbstractResponse
 data class AIFlowDataModel(
     val initialTime: Long = 0,
     val aiConfig: AIConfiguration = AIConfiguration(),
-    val aiRequestResponseLinkedHashSet: LinkedHashSet<String> = LinkedHashSet()
+    val aiRequestResponseLinkedHashSet: LinkedHashSet<AIRequestResponseChain> = LinkedHashSet()
     //TODO add AI chat LinkedHashSet
 
 ) {
     data class AIRequestResponseChain(
-        val id: Int,
-        val requestTime: Long,
-        val responseTime: Long,
-        val request: AbstractRequest,
-        val response: AbstractResponse
-
+        val id: Int = 0,
+        val requestTime: Long = 0,
+        val responseTime: Long = 0,
+        val request: AbstractRequest? = null,
+        val response: AbstractResponse? = null,
+        val isSuccessful: Boolean = false,
+        val httpCode: Int = 0,
+        val message: String = ""
     )
 }

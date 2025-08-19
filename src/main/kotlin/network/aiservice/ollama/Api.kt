@@ -5,9 +5,10 @@ import network.aiservice.ollama.data.OllamaGenerateResponse
 import retrofit2.Call
 import retrofit2.http.Body
 import retrofit2.http.POST
+import retrofit2.http.Path
 
 interface Api {
 
-    @POST("/generate")
-    fun getAIResponse(@Body ollamaGenerateRequest: OllamaGenerateRequest): Call<OllamaGenerateResponse>
+    @POST("/{routeUrl}")
+    fun getAIResponse(@Path("routeUrl") routeUrl: String, @Body ollamaGenerateRequest: OllamaGenerateRequest): Call<OllamaGenerateResponse>
 }
