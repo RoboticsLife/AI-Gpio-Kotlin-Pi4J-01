@@ -1,0 +1,13 @@
+{
+  "aiConfigName": "gemma3:12b",
+  "aiConfigDescription": "'gemma3:12b' model on macOS 15.6 and local AI model on Ollama server. Local network access to API",
+  "aiConfigVersion": "1.0.0",
+  "aiModel": "gemma3:12b",
+  "aiConnectionType": "remote",
+  "isAIOfflineModeAvailable": false,
+  "aiServerBaseURL": "http://127.0.0.1:11434/api/",
+  "aiTextMode": true,
+  "aiImageMode": true,
+  "aiSingleRequestApiRoute": "generate",
+  "aiChatRequestApiRoute": "chat"
+}

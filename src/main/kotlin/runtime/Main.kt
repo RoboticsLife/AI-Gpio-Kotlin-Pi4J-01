@@ -4,20 +4,17 @@ import avatar.Avatar
 import avatar.hardware.AvatarBuilder
 import brain.Brain
 import brain.BrainBuilder
+import brain.ai.data.local.AITextRequestParams
 import brain.emitters.NetworkEmitters
 import com.pi4j.context.Context
 import com.pi4j.util.Console
 import kotlinx.coroutines.*
-import network.weatherservice.WeatherNetworkService
 import brain.data.local.Configuration
+import network.aiservice.ollama.data.OllamaGenerateResponse
 import runtime.setup.Injector
 
-
 /**
- * LESSON 12: Firebase Database remote connection
- * GPIO-Kotlin-Pi4j project.
- * Kotlin Gpio project. Working with IO lines on Raspberry Pi using Pi4J Kotlin/Java langs and remote
- * compiling / debugging to any ARM GPIO compatible hardware. Advanced AI features (TensorFlow)
+ * LESSON 1: AI integration
  */
 
 //Hardware
@@ -26,7 +23,6 @@ lateinit var console: Console
 lateinit var configuration: Configuration
 lateinit var avatar: Avatar
 lateinit var brain: Brain
-var city = "Toronto"
 
 suspend fun main(args: Array<String>) {
 
@@ -36,11 +32,18 @@ suspend fun main(args: Array<String>) {
     //Print out
     console.println(pi4j.boardInfo().boardModel)
 
-    val weatherNetworkService = WeatherNetworkService()
+    brain.askAI("How do you feel today?", params = AITextRequestParams(aiTextResponseLengthLimit = 20))
 
-    weatherNetworkService.getWeatherByName(city)
+    delay(3000)
+    brain.askAI("What is the weather in toronto today?")
+    delay(5000)
+    brain.askAI("Does the Earth flat?", params = AITextRequestParams(aiTextResponseLengthLimit = 1))
+    delay(5000)
 
-    brain.askAI("How do you feel today?")
+    brain.askAI("Your favourite color?")
+    delay(5000)
+    brain.askAI("Do you like robotics?")
+
 
     //add infinite loop for java app running
     coroutineScope {
@@ -58,16 +61,11 @@ fun init() {
     avatar = AvatarBuilder(pi4j, configuration).build()
     brain = BrainBuilder(avatar = avatar).build()
 }
-
-fun collectData() {
-
-    val jobWeatherCollector = CoroutineScope(Job() + Dispatchers.IO).launch {
-        NetworkEmitters.weatherEmitter.collect { weather ->
-            if (weather.isSuccessful && weather.weatherResponse != null) {
-                println(weather)
-
-            }
-
-        }
-    }
+ fun collectData() {
+     val jobAICollector = CoroutineScope(Job() + Dispatchers.IO).launch {
+         NetworkEmitters.aiEmitter.collect { ai ->
+             println((ai?.aiRequestResponseLinkedHashSet?.lastOrNull()?.response as? OllamaGenerateResponse)?.response)
+            // println((ai?.aiRequestResponseLinkedHashSet?.lastOrNull()?.id))
+         }
+     }
 }

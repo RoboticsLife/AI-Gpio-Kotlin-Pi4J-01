@@ -12,4 +12,8 @@ object Settings {
     const val AI_DEFAULT_CONFIG_FILE_NAME = "aiconfig.json"
     const val AI_REMOTE_CONNECTION_TYPE = "remote"
     const val AI_LOCAL_CONNECTION_TYPE = "local"
+    const val AI_FORMATTED_STRING_QUERY_WORDS_LIMITATION = "(limit response with %s words)"
+    const val NETWORK_OKHTTP_DEFAULT_READ_TIMEOUT_SEC = 120L
+    const val NETWORK_OKHTTP_DEFAULT_CONNECT_TIMEOUT_SEC = 120L
+    const val NETWORK_OKHTTP_DEFAULT_WRITE_TIMEOUT_SEC = 120L
 }

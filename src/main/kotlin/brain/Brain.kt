@@ -2,6 +2,7 @@ package brain
 
 import avatar.Avatar
 import brain.ai.data.local.AIConfiguration
+import brain.ai.data.local.AITextRequestParams
 import brain.data.remote.DistanceSensor
 import brain.emitters.DistanceEmitters
 import brain.utils.toCm
@@ -10,6 +11,7 @@ import network.aiservice.AIService
 import network.aiservice.ollama.AIOllamaNetworkService
 import network.databases.DatabaseConnector
 import network.databases.DatabaseInitializer
+import org.slf4j.Logger
 import runtime.setup.Injector
 import runtime.setup.Settings
 import runtime.setup.Settings.AI_REMOTE_CONNECTION_TYPE
@@ -44,11 +46,11 @@ class Brain {
             if (this.avatar.configuration?.customAiConfigName.isNullOrEmpty()) Settings.AI_DEFAULT_CONFIG_FILE_NAME
             else this.avatar.configuration?.customAiConfigName
         aiConfig = Injector.getRuntimeAIConfiguration().getAIConfiguration(aiConfigFileName.toString())
-
+        println(aiConfig.toString()) //Replace with internal logs emitter / collector
         if (aiConfig.aiConnectionType == AI_REMOTE_CONNECTION_TYPE) {
             aiService = AIOllamaNetworkService(aiConfig)
         } else {
-            //TODO: provide local AI service
+            //TODO: provide local AI service if need
             aiService = AIOllamaNetworkService(aiConfig)
         }
     }
@@ -75,10 +77,9 @@ class Brain {
         devicesThreadScopeArray.remove("$parameterName${devicePosition.toString()}")
     }
 
-    fun askAI(question: String) {
-        aiService.askAI(question)
+    fun askAI(question: String, params: AITextRequestParams? = null) {
+        aiService.askAI(question, params)
     }
-
 
     private fun subscribeToDistanceEmitters(sensorPosition: Int? = null, loggingPeriodInMillis: Long = 1000) {
         var launchTime = System.currentTimeMillis()

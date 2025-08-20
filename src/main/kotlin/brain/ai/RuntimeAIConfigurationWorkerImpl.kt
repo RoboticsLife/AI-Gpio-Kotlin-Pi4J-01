@@ -10,11 +10,12 @@ class RuntimeAIConfigurationWorkerImpl: RuntimeAIConfigurationWorker {
 
     override fun getAIConfiguration(fileName: String): AIConfiguration {
         val mapper = jacksonObjectMapper()
+        println(fileName)
         mapper.registerKotlinModule()
         mapper.registerModule(JavaTimeModule())
         try {
             var jsonString = javaClass.classLoader.getResource(fileName)?.readText()
-            if (!jsonString.isNullOrEmpty()) {
+            if (jsonString.isNullOrEmpty()) {
                 jsonString = javaClass.classLoader.getResource(Settings.AI_DEFAULT_CONFIG_FILE_NAME)?.readText()
             }
             val jsonTextConfig: AIConfiguration = mapper.readValue(jsonString, AIConfiguration::class.java)

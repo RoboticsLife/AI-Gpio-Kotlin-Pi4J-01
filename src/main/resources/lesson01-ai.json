@@ -1,64 +1,10 @@
 {
   "configName": "lesson01-ai",
-  "configDescription": "'gemma3:4b' model on macOS 15.6 and local AI model on Ollama server. Local network access to API",
+  "configDescription": "'gemma3:12b' model on macOS 15.6 and local AI model on Ollama server. Local network access to API",
   "configVersion": "1.0.0",
   "hardwareType": "circuitboard",
   "hardwareModel": "i2c",
   "hardwareTypeCode": 1,
   "hardwareModelCode": 1,
-  "customAiConfigName": "",
-  "leds": [
-    {
-      "name": "green-led",
-      "pin": 5
-    },
-    {
-      "name": "red-led",
-      "pin": 26
-    }
-  ],
-  "buttons": [
-    {
-      "name": "ControlButton",
-      "pin": 21,
-      "pullResistance": 0
-    }
-  ],
-  "distanceSensors": [
-    {
-      "name": "distance-sensor-HC-SR04",
-      "hardwareModel": "HC-SR04",
-      "hardwareVersion": "2021",
-      "pinTrigger": 25,
-      "pinEcho": 24,
-      "installedSensorPosition": 0,
-      "movingAngle": 0
-    }
-  ],
-  "displays": [
-    {
-      "name": "LCD 1602 Display connected to I2C bus",
-      "hardwareModel": "LCD1602",
-      "hardwareVersion": "i2c",
-      "connectionType": "i2c",
-      "pinSDA": 1,
-      "pinSCL": 2,
-      "addressHexAsString": "0x27",
-      "resolutionRows": 2,
-      "resolutionColumns": 16
-    }
-  ],
-  "positionSensors": [
-    {
-      "name": "MPU6050 connected to I2C bus",
-      "hardwareModel": "MPU6050",
-      "hardwareVersion": "i2c",
-      "connectionType": "i2c",
-      "pinSDA": 1,
-      "pinSCL": 2,
-      "addressHexAsString": "0x68",
-      "dlpfCfg": 0,
-      "smplrtDiv": 0
-    }
-  ]
+  "customAiConfigName": "aiconfig.json"
 }

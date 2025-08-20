@@ -2,10 +2,10 @@ package network.aiservice.ollama
 
 import brain.ai.data.local.AIConfiguration
 import brain.ai.data.local.AIFlowDataModel
+import brain.ai.data.local.AITextRequestParams
 import brain.emitters.NetworkEmitters
 import network.InternetConnection
 import network.aiservice.AIService
-import network.aiservice.data.AbstractRequest
 import network.aiservice.ollama.data.OllamaGenerateRequest
 import runtime.setup.Settings
 
@@ -14,11 +14,9 @@ class AIOllamaNetworkService(aiConfiguration: AIConfiguration): AIService {
     private val aiConfig: AIConfiguration = aiConfiguration
     private val client = InternetConnection.getWeatherClient(aiConfiguration.aiServerBaseURL.toString())
     private val apiService = client.create(Api::class.java)
-    var aiTextResponseLengthLimit: Int = 0
-        private set
 
     private fun verifyAIFlow() {
-        if (NetworkEmitters.aiEmitter.value == null) {
+        if (NetworkEmitters.aiEmitter.replayCache.firstOrNull() == null) {
             NetworkEmitters.emitAIResponse(
                 AIFlowDataModel(
                     initialTime = System.currentTimeMillis(),
@@ -28,49 +26,55 @@ class AIOllamaNetworkService(aiConfiguration: AIConfiguration): AIService {
     }
 
     private fun generateAITextRequest(text: String): OllamaGenerateRequest {
-
         return OllamaGenerateRequest(
             model = aiConfig.aiModel,
             prompt = text,
             stream = false
             )
-
     }
 
-    private fun buildAIFlowDataModel(): AIFlowDataModel.AIRequestResponseChain {
-        return AIFlowDataModel.AIRequestResponseChain()
+    private fun applyRequestRulesToQuery(question: String, params: AITextRequestParams?): String {
+        if (params == null) return question
+        if (params.aiTextResponseLengthLimit == 0) return question
+        if (params.aiTextResponseLengthLimit > 0)
+            return question + " " + String.format(Settings.AI_FORMATTED_STRING_QUERY_WORDS_LIMITATION, params.aiTextResponseLengthLimit)
+
+        return question
     }
 
-
-    override fun askAI(question: String) {
+    override fun askAI(question: String, params: AITextRequestParams?) {
         verifyAIFlow()
 
-        println("ASKING!!!")
+        val formattedQuestion = applyRequestRulesToQuery(question, params)
+        val ollamaGenerateRequest = generateAITextRequest(formattedQuestion)
+        val requestTime = System.currentTimeMillis()
 
-        val ollamaGenerateRequest = generateAITextRequest(question)
         val response = apiService.getAIResponse(
             routeUrl = aiConfig.aiSingleRequestApiRoute.toString(),
             ollamaGenerateRequest = ollamaGenerateRequest
             ).execute()
 
-        println(response.body()?.response.toString())
-       // NetworkEmitters.emitAIResponse()
+        val responseTime = System.currentTimeMillis()
+        if (NetworkEmitters.aiEmitter.replayCache.firstOrNull() == null) verifyAIFlow()
 
-      //  NetworkEmitters.emitWeatherResponse(
-        //    WeatherData(
-          //      weatherResponse = if (response.isSuccessful) response.body() else null,
-            //    isSuccessful = response.isSuccessful,
-              //  httpCode = response.code(),
-              //  message = response.message()
-           // )
-       // )
+        //Emit new AI data
+        NetworkEmitters.emitAIResponse(NetworkEmitters.aiEmitter.replayCache.firstOrNull().also { model ->
+            model?.aiRequestResponseLinkedHashSet?. add(AIFlowDataModel.AIRequestResponseChain(
+                id = NetworkEmitters.aiEmitter.replayCache.firstOrNull()!!.aiRequestResponseLinkedHashSet.size,
+                requestTime = requestTime,
+                responseTime = responseTime,
+                request = ollamaGenerateRequest,
+                response = response.body(),
+                isSuccessful = response.isSuccessful,
+                httpCode = response.code(),
+                message = response.message()
+            ))
+        })
+
     }
 
     override fun imageClassification(decodedImageBase64String: String) {
         //TODO
     }
 
-    override fun setAITextResponseLengthLimit(wordsLength: Int) {
-        //TODO
-    }
 }
