@@ -6,6 +6,6 @@ interface AIService {
 
     fun askAI(question: String,  params: AITextRequestParams? = null)
 
-    fun imageClassification(decodedImageBase64String: String)
+    fun imageClassification(question: String,  params: AITextRequestParams? = null)
 
 }

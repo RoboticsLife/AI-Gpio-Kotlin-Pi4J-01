@@ -8,6 +8,8 @@ import network.InternetConnection
 import network.aiservice.AIService
 import network.aiservice.ollama.data.OllamaGenerateRequest
 import runtime.setup.Settings
+import java.util.*
+
 
 class AIOllamaNetworkService(aiConfiguration: AIConfiguration): AIService {
 
@@ -31,6 +33,15 @@ class AIOllamaNetworkService(aiConfiguration: AIConfiguration): AIService {
             prompt = text,
             stream = false
             )
+    }
+
+    private fun generateAITextAndImageRequest(text: String, image64String: String): OllamaGenerateRequest {
+        return OllamaGenerateRequest(
+            model = aiConfig.aiModel,
+            prompt = text,
+            images = listOf(image64String),
+            stream = false
+        )
     }
 
     private fun applyRequestRulesToQuery(question: String, params: AITextRequestParams?): String {
@@ -73,8 +84,43 @@ class AIOllamaNetworkService(aiConfiguration: AIConfiguration): AIService {
 
     }
 
-    override fun imageClassification(decodedImageBase64String: String) {
-        //TODO
+    override fun imageClassification(question: String,  params: AITextRequestParams?) {
+        println(question)
+
+        val inputStream = javaClass.classLoader.getResource("cntower.jpg")?.openStream()
+        //val inputStream = javaClass.classLoader.getResource("avatar.jpg")?.openStream()
+        val base64Image = Base64.getEncoder().encodeToString(inputStream?.readAllBytes())
+        println(base64Image)
+
+
+        verifyAIFlow()
+
+        val formattedQuestion = applyRequestRulesToQuery(question, params)
+        val ollamaGenerateRequest = generateAITextAndImageRequest(formattedQuestion, base64Image)
+        val requestTime = System.currentTimeMillis()
+
+        val response = apiService.getAIResponse(
+            routeUrl = aiConfig.aiSingleRequestApiRoute.toString(),
+            ollamaGenerateRequest = ollamaGenerateRequest
+        ).execute()
+
+        val responseTime = System.currentTimeMillis()
+        if (NetworkEmitters.aiEmitter.replayCache.firstOrNull() == null) verifyAIFlow()
+
+        //Emit new AI data
+        NetworkEmitters.emitAIResponse(NetworkEmitters.aiEmitter.replayCache.firstOrNull().also { model ->
+            model?.aiRequestResponseLinkedHashSet?. add(AIFlowDataModel.AIRequestResponseChain(
+                id = NetworkEmitters.aiEmitter.replayCache.firstOrNull()!!.aiRequestResponseLinkedHashSet.size,
+                requestTime = requestTime,
+                responseTime = responseTime,
+                request = ollamaGenerateRequest,
+                response = response.body(),
+                isSuccessful = response.isSuccessful,
+                httpCode = response.code(),
+                message = response.message()
+            ))
+        })
+
     }
 
 }

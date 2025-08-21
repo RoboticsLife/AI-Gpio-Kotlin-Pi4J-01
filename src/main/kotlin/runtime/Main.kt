@@ -32,17 +32,20 @@ suspend fun main(args: Array<String>) {
     //Print out
     console.println(pi4j.boardInfo().boardModel)
 
-    brain.askAI("How do you feel today?", params = AITextRequestParams(aiTextResponseLengthLimit = 20))
+    brain.lookUseAI("what do you see on this picture?")
 
-    delay(3000)
-    brain.askAI("What is the weather in toronto today?")
-    delay(5000)
-    brain.askAI("Does the Earth flat?", params = AITextRequestParams(aiTextResponseLengthLimit = 1))
-    delay(5000)
+   // brain.askUseAI("How do you feel today?", params = AITextRequestParams(aiTextResponseLengthLimit = 20))
 
-    brain.askAI("Your favourite color?")
-    delay(5000)
-    brain.askAI("Do you like robotics?")
+   // delay(3000)
+  //  brain.askUseAI("What is the weather in toronto today?")
+   // delay(5000)
+   // brain.askUseAI("Does the Earth flat?", params = AITextRequestParams(aiTextResponseLengthLimit = 1))
+   // delay(5000)
+
+   // brain.askUseAI("Your favourite color?")
+   // delay(5000)
+   // brain.askUseAI("Do you like robotics?")
+
 
 
     //add infinite loop for java app running
@@ -59,13 +62,12 @@ fun init() {
     console = Injector.getPi4jConsole()
     configuration = Injector.getRuntimeConfiguration().getConfiguration("lesson01-ai.json")
     avatar = AvatarBuilder(pi4j, configuration).build()
-    brain = BrainBuilder(avatar = avatar).build()
+    brain = BrainBuilder(avatar = avatar).build(BrainBuilder.Type.ROBOT)
 }
  fun collectData() {
      val jobAICollector = CoroutineScope(Job() + Dispatchers.IO).launch {
          NetworkEmitters.aiEmitter.collect { ai ->
              println((ai?.aiRequestResponseLinkedHashSet?.lastOrNull()?.response as? OllamaGenerateResponse)?.response)
-            // println((ai?.aiRequestResponseLinkedHashSet?.lastOrNull()?.id))
          }
      }
 }
