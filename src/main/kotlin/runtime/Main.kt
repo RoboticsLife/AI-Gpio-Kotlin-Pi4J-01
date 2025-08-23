@@ -32,7 +32,8 @@ suspend fun main(args: Array<String>) {
     //Print out
     console.println(pi4j.boardInfo().boardModel)
 
-    brain.lookUseAI("what do you see on this picture?")
+    //brain.lookUseAI("what do you see on this picture?")
+    brain.lookUseAI("what do you see on this picture?", params = AITextRequestParams(aiTextResponseLengthLimit = 10))
 
    // brain.askUseAI("How do you feel today?", params = AITextRequestParams(aiTextResponseLengthLimit = 20))
 

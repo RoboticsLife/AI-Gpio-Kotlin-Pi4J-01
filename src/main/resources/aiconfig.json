@@ -5,7 +5,7 @@
   "aiModel": "gemma3:4b",
   "aiConnectionType": "remote",
   "isAIOfflineModeAvailable": false,
-  "aiServerBaseURL": "http://172.20.3.80:11434/api/",
+  "aiServerBaseURL": "http://127.0.0.1:11434/api/",
   "aiTextMode": true,
   "aiImageMode": true,
   "aiSingleRequestApiRoute": "generate",
