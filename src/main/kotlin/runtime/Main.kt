@@ -37,6 +37,9 @@ suspend fun main(args: Array<String>) {
 
    // brain.askUseAI("How do you feel today?", params = AITextRequestParams(aiTextResponseLengthLimit = 20))
 
+   // delay(5000)
+    brain.generateVoiceFromString("try it now")
+
    // delay(3000)
   //  brain.askUseAI("What is the weather in toronto today?")
    // delay(5000)
@@ -69,6 +72,7 @@ fun init() {
      val jobAICollector = CoroutineScope(Job() + Dispatchers.IO).launch {
          NetworkEmitters.aiEmitter.collect { ai ->
              println((ai?.aiRequestResponseLinkedHashSet?.lastOrNull()?.response as? OllamaGenerateResponse)?.response)
+
          }
      }
 }

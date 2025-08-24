@@ -21,6 +21,10 @@ object NetworkEmitters {
     private val _aiEmitter = MutableSharedFlow<AIFlowDataModel?>(replay = 1)
     val aiEmitter = _aiEmitter.asSharedFlow()
 
+    //AI Voice generator
+    private val _aiVoiceEmitter = MutableSharedFlow<Boolean?>(replay = 1) //TODO add model if need
+    val aiVoiceEmitter = _aiEmitter.asSharedFlow()
+
     fun emitWeatherResponse(weatherData: WeatherData) {
         CoroutineScope(Dispatchers.IO).launch {
             _weatherEmitter.emit(weatherData)
@@ -30,6 +34,12 @@ object NetworkEmitters {
     fun emitAIResponse(aiFlowDataModel: AIFlowDataModel?) {
         CoroutineScope(Dispatchers.IO).launch {
             _aiEmitter.emit(aiFlowDataModel)
+        }
+    }
+
+    fun emitAIVoiceGeneratorResponse(wasPlayed: Boolean) {
+        CoroutineScope(Dispatchers.IO).launch {
+            _aiVoiceEmitter.emit(wasPlayed)
         }
     }
 }

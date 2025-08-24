@@ -20,15 +20,7 @@ object InternetConnection {
             .build()
     }
 
-    fun getWeatherClient(baseUrl: String): Retrofit {
-        return Retrofit.Builder()
-            .client(okHttpClient ?: getOkHttpClient())
-            .baseUrl(baseUrl)
-            .addConverterFactory(JacksonConverterFactory.create())
-            .build()
-    }
-
-    fun getAINetworkClient(baseUrl: String): Retrofit {
+    fun getRetrofitClient(baseUrl: String): Retrofit {
         return Retrofit.Builder()
             .client(okHttpClient ?: getOkHttpClient())
             .baseUrl(baseUrl)

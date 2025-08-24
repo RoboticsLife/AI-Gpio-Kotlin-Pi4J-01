@@ -11,10 +11,9 @@ import runtime.setup.Settings
 import java.util.*
 
 
-class AIOllamaNetworkService(aiConfiguration: AIConfiguration): AIService {
-
+class AIOllamaNetworkServiceImpl(aiConfiguration: AIConfiguration): AIService {
     private val aiConfig: AIConfiguration = aiConfiguration
-    private val client = InternetConnection.getWeatherClient(aiConfiguration.aiServerBaseURL.toString())
+    private val client = InternetConnection.getRetrofitClient(aiConfiguration.aiServerBaseURL.toString())
     private val apiService = client.create(Api::class.java)
 
     private fun verifyAIFlow() {
@@ -23,7 +22,7 @@ class AIOllamaNetworkService(aiConfiguration: AIConfiguration): AIService {
                 AIFlowDataModel(
                     initialTime = System.currentTimeMillis(),
                     aiConfig = aiConfig
-            ))
+                ))
         }
     }
 
@@ -32,7 +31,7 @@ class AIOllamaNetworkService(aiConfiguration: AIConfiguration): AIService {
             model = aiConfig.aiModel,
             prompt = text,
             stream = false
-            )
+        )
     }
 
     private fun generateAITextAndImageRequest(text: String, image64String: String): OllamaGenerateRequest {
@@ -63,7 +62,7 @@ class AIOllamaNetworkService(aiConfiguration: AIConfiguration): AIService {
         val response = apiService.getAIResponse(
             routeUrl = aiConfig.aiSingleRequestApiRoute.toString(),
             ollamaGenerateRequest = ollamaGenerateRequest
-            ).execute()
+        ).execute()
 
         val responseTime = System.currentTimeMillis()
         if (NetworkEmitters.aiEmitter.replayCache.firstOrNull() == null) verifyAIFlow()

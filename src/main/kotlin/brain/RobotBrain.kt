@@ -10,7 +10,9 @@ import brain.perceptions.RobotPerceptions
 import brain.utils.toCm
 import kotlinx.coroutines.*
 import network.aiservice.AIService
-import network.aiservice.ollama.AIOllamaNetworkService
+import network.aiservice.aivoiceassistant.AIVoiceAssistantService
+import network.aiservice.aivoiceassistant.GeminiVoiceAssistantServiceImpl
+import network.aiservice.ollama.AIOllamaNetworkServiceImpl
 import network.databases.DatabaseConnector
 import network.databases.DatabaseInitializer
 import runtime.setup.Injector
@@ -23,6 +25,7 @@ class RobotBrain: Brain {
     private lateinit var dataBaseFirebaseFirestore: DatabaseConnector
     private lateinit var aiConfig: AIConfiguration
     private lateinit var aiService: AIService
+    private lateinit var aiVoiceAssistantService: AIVoiceAssistantService
     override lateinit var perceptions: Perceptions
 
 
@@ -32,6 +35,7 @@ class RobotBrain: Brain {
     private fun init() {
         initDatabases()
         initAI()
+        initAIVoiceGenerator()
     }
 
     override fun build(avatar: Avatar): Brain {
@@ -52,10 +56,19 @@ class RobotBrain: Brain {
         aiConfig = Injector.getRuntimeAIConfiguration().getAIConfiguration(aiConfigFileName.toString())
         println(aiConfig.toString()) //Replace with internal logs emitter / collector
         if (aiConfig.aiConnectionType == AI_REMOTE_CONNECTION_TYPE) {
-            aiService = AIOllamaNetworkService(aiConfig)
+            aiService = AIOllamaNetworkServiceImpl(aiConfig)
         } else {
             //TODO: provide local AI service if need
-            aiService = AIOllamaNetworkService(aiConfig)
+            aiService = AIOllamaNetworkServiceImpl(aiConfig)
+        }
+    }
+
+    private fun initAIVoiceGenerator() {
+        val config = aiConfig.additionalAIServices?.first { it?.aiType == "voiceGenerator"}
+        if (config != null) {
+            aiVoiceAssistantService = GeminiVoiceAssistantServiceImpl(config)
+        } else {
+            aiVoiceAssistantService = GeminiVoiceAssistantServiceImpl(AIConfiguration.AdditionalAIService())
         }
     }
 
@@ -87,6 +100,11 @@ class RobotBrain: Brain {
 
     override fun lookUseAI(question: String, params: AITextRequestParams?) {
         aiService.imageClassification(question, params)
+    }
+
+    override fun generateVoiceFromString(text: String) {
+        //TODO tests
+        aiVoiceAssistantService.convertStringToSoundSource(text)
     }
 
     private fun subscribeToDistanceEmitters(sensorPosition: Int? = null, loggingPeriodInMillis: Long = 1000) {

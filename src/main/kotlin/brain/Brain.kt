@@ -22,4 +22,6 @@ interface Brain {
 
     fun lookUseAI(question: String, params: AITextRequestParams? = null)
 
+    fun generateVoiceFromString(text: String)
+
 }

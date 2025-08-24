@@ -5,9 +5,29 @@
   "aiModel": "gemma3:4b",
   "aiConnectionType": "remote",
   "isAIOfflineModeAvailable": false,
+  "aiType": "textImage",
   "aiServerBaseURL": "http://127.0.0.1:11434/api/",
   "aiTextMode": true,
   "aiImageMode": true,
+  "aiVoiceMode": false,
   "aiSingleRequestApiRoute": "generate",
-  "aiChatRequestApiRoute": "chat"
+  "aiChatRequestApiRoute": "chat",
+
+  "additionalAIServices" : [
+    {
+      "aiConfigName": "Gemini2.5FlashPreviewTTS",
+      "aiConfigDescription": "Google gemini voice assistant generator",
+      "aiConfigVersion": "1.0.0",
+      "aiModel": "gemini-2.5-flash",
+      "aiConnectionType": "remote",
+      "isAIOfflineModeAvailable": false,
+      "aiType": "voiceGenerator",
+      "aiServerBaseURL": "https://generativelanguage.googleapis.com/",
+      "aiVoiceGenerationApiRoute": "v1beta/models/gemini-2.5-flash-preview-tts:streamGenerateContent",
+      "aiTextMode": false,
+      "aiImageMode": false,
+      "aiVoiceMode": true,
+      "apiKey": "AIzaSyAVfKzDWwWAGLIQ6kFY1eeaJ4DdoZ-BoCU"
+    }
+  ]
 }

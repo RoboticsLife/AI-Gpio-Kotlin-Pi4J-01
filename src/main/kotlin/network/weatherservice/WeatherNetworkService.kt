@@ -11,7 +11,7 @@ class WeatherNetworkService {
         const val WEATHER_BASE_URL = "https://api.openweathermap.org/"
     }
 
-    private val client = InternetConnection.getWeatherClient(WEATHER_BASE_URL)
+    private val client = InternetConnection.getRetrofitClient(WEATHER_BASE_URL)
     private val apiService = client.create(Api::class.java)
 
     fun getWeatherByName(city: String, units: String = "metric") {
