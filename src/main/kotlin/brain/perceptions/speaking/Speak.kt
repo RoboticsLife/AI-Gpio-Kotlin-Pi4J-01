@@ -2,5 +2,5 @@ package brain.perceptions.speaking
 
 interface Speak {
 
-    fun talk()
+    fun talk(byteArray: String)
 }

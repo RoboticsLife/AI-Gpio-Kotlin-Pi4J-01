@@ -5,16 +5,21 @@ import brain.ai.data.local.AIConfiguration
 import brain.ai.data.local.AITextRequestParams
 import brain.data.remote.DistanceSensor
 import brain.emitters.DistanceEmitters
+import brain.emitters.NetworkEmitters
 import brain.perceptions.Perceptions
 import brain.perceptions.RobotPerceptions
+import brain.perceptions.speaking.TTSGeminiOnlineEngine
+import brain.perceptions.speaking.TTSVoice
 import brain.utils.toCm
 import kotlinx.coroutines.*
 import network.aiservice.AIService
 import network.aiservice.aivoiceassistant.AIVoiceAssistantService
 import network.aiservice.aivoiceassistant.GeminiVoiceAssistantServiceImpl
 import network.aiservice.ollama.AIOllamaNetworkServiceImpl
+import network.aiservice.ollama.data.OllamaGenerateResponse
 import network.databases.DatabaseConnector
 import network.databases.DatabaseInitializer
+import org.example.runtime.collectData
 import runtime.setup.Injector
 import runtime.setup.Settings
 import runtime.setup.Settings.AI_REMOTE_CONNECTION_TYPE
@@ -27,6 +32,8 @@ class RobotBrain: Brain {
     private lateinit var aiService: AIService
     private lateinit var aiVoiceAssistantService: AIVoiceAssistantService
     override lateinit var perceptions: Perceptions
+    private lateinit var voice: TTSVoice
+
 
 
     //Threads
@@ -36,6 +43,7 @@ class RobotBrain: Brain {
         initDatabases()
         initAI()
         initAIVoiceGenerator()
+        collectData()
     }
 
     override fun build(avatar: Avatar): Brain {
@@ -67,8 +75,10 @@ class RobotBrain: Brain {
         val config = aiConfig.additionalAIServices?.first { it?.aiType == "voiceGenerator"}
         if (config != null) {
             aiVoiceAssistantService = GeminiVoiceAssistantServiceImpl(config)
+            voice = TTSGeminiOnlineEngine()
         } else {
             aiVoiceAssistantService = GeminiVoiceAssistantServiceImpl(AIConfiguration.AdditionalAIService())
+            voice = TTSGeminiOnlineEngine()
         }
     }
 
@@ -103,7 +113,6 @@ class RobotBrain: Brain {
     }
 
     override fun generateVoiceFromString(text: String) {
-        //TODO tests
         aiVoiceAssistantService.convertStringToSoundSource(text)
     }
 
@@ -131,6 +140,16 @@ class RobotBrain: Brain {
         devicesThreadScopeArray["$PARAMETER_SENSOR_DISTANCE${sensorPosition.toString()}"] = threadScope
     }
 
+    private fun collectData() {
+        val jobAIVoiceGeneratorResponseCollector = CoroutineScope(Job() + Dispatchers.IO).launch {
+            NetworkEmitters.aiVoiceEmitter.collect { generatedVoice ->
+                val audioStream = generatedVoice.requestResponsePair.response?.firstOrNull()
+                    ?.candidates?.firstOrNull()?.content?.parts?.firstOrNull()?.inlineData?.data
+                voice.talk(audioStream ?: "")
+
+            }
+        }
+    }
 
     companion object {
         const val PARAMETER_SENSOR_DISTANCE = "sensorDistance"

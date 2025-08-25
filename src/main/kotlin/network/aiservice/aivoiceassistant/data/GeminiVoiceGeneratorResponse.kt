@@ -1,6 +1,6 @@
 package network.aiservice.aivoiceassistant.data
 
-class GeminiVoiceGeneratorResponse : ArrayList<GeminiVoiceGeneratorResponse.GeminiVoiceGeneratorResponseItem>(){
+class GeminiVoiceGeneratorResponse : ArrayList<GeminiVoiceGeneratorResponse.GeminiVoiceGeneratorResponseItem>() {
     data class GeminiVoiceGeneratorResponseItem(
         val candidates: List<Candidate?>? = null,
         val modelVersion: String? = null,

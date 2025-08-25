@@ -6,7 +6,7 @@
   "aiConnectionType": "remote",
   "isAIOfflineModeAvailable": false,
   "aiType": "textImage",
-  "aiServerBaseURL": "http://127.0.0.1:11434/api/",
+  "aiServerBaseURL": "http://172.20.3.80:11434/api/",
   "aiTextMode": true,
   "aiImageMode": true,
   "aiVoiceMode": false,
@@ -27,6 +27,7 @@
       "aiTextMode": false,
       "aiImageMode": false,
       "aiVoiceMode": true,
+      "voice": "Umbriel",
       "apiKey": "AIzaSyAVfKzDWwWAGLIQ6kFY1eeaJ4DdoZ-BoCU"
     }
   ]

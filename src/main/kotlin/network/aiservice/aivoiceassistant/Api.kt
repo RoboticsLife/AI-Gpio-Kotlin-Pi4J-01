@@ -10,10 +10,8 @@ import retrofit2.http.Query
 
 interface Api {
 
-   // @POST("{routeUrl}")
     @POST("v1beta/models/gemini-2.5-flash-preview-tts:streamGenerateContent")
     fun getAIVoiceResponse(
-     //   @Path("routeUrl") routeUrl: String,
         @Query("key") key: String,
         @Body geminiVoiceGeneratorRequest: GeminiVoiceGeneratorRequest
     ): Call<GeminiVoiceGeneratorResponse>

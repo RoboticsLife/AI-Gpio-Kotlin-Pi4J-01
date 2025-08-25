@@ -1,23 +1,16 @@
 package network.aiservice.aivoiceassistant
 
 import brain.ai.data.local.AIConfiguration
+import brain.ai.data.local.GeneratedVoiceResponseDataModel
 import brain.emitters.NetworkEmitters
 import network.InternetConnection
 import network.aiservice.aivoiceassistant.data.GeminiVoiceGeneratorRequest
-import java.nio.charset.StandardCharsets
 
 class GeminiVoiceAssistantServiceImpl(aiVoiceConfig: AIConfiguration.AdditionalAIService): AIVoiceAssistantService {
 
     private val aiConfig: AIConfiguration.AdditionalAIService = aiVoiceConfig
     private val client = InternetConnection.getRetrofitClient(aiVoiceConfig.aiServerBaseURL.toString())
     private val apiService = client.create(Api::class.java)
-
-    private fun verifyAIFlow() {
-        if (NetworkEmitters.aiVoiceEmitter.replayCache.firstOrNull() == null) {
-            NetworkEmitters.emitAIVoiceGeneratorResponse(false)
-        }
-    }
-
 
     private fun generateAITextToVoiceRequest(text: String): GeminiVoiceGeneratorRequest {
         return GeminiVoiceGeneratorRequest(
@@ -34,7 +27,7 @@ class GeminiVoiceAssistantServiceImpl(aiVoiceConfig: AIConfiguration.AdditionalA
                 speechConfig = GeminiVoiceGeneratorRequest.GenerationConfig.SpeechConfig(
                     voiceConfig = GeminiVoiceGeneratorRequest.GenerationConfig.SpeechConfig.VoiceConfig(
                         prebuiltVoiceConfig = GeminiVoiceGeneratorRequest.GenerationConfig.SpeechConfig.VoiceConfig.PrebuiltVoiceConfig(
-                            voiceName = "Umbriel" //TODO add different voices
+                            voiceName = aiConfig.voice
                         )
                     )
                 )
@@ -47,22 +40,24 @@ class GeminiVoiceAssistantServiceImpl(aiVoiceConfig: AIConfiguration.AdditionalA
         val requestTime = System.currentTimeMillis()
 
         val response = apiService.getAIVoiceResponse(
-            //routeUrl = aiConfig.aiVoiceGenerationApiRoute.toString(),
             key = aiConfig.apiKey.toString(),
             geminiVoiceGeneratorRequest = request
         ).execute()
 
         val responseTime = System.currentTimeMillis()
-        if (NetworkEmitters.aiVoiceEmitter.replayCache.firstOrNull() == null) verifyAIFlow()
 
-        //TODO Tests
-       // println(response.body())
-
-        //TODO tests generate it
-        val audioStream = response.body()?.firstOrNull()?.candidates?.firstOrNull()?.content?.parts?.firstOrNull()?.inlineData?.data
-        println(audioStream)
-     //   val bytes: ByteArray? = audioStream.getBytes(StandardCharsets.UTF_8)
-
-
+        NetworkEmitters.emitAIVoiceGeneratorResponse(GeneratedVoiceResponseDataModel(
+            aiConfig = aiConfig,
+            requestResponsePair = GeneratedVoiceResponseDataModel.GeneratedVoiceRequestResponseChain(
+                id = requestTime,
+                requestTime = requestTime,
+                responseTime = responseTime,
+                request = request,
+                response = response.body(),
+                isSuccessful = response.isSuccessful,
+                httpCode = response.code(),
+                message = response.message()
+            )
+        ))
     }
 }

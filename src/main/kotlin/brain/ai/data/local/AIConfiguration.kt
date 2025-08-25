@@ -33,6 +33,7 @@ data class AIConfiguration(
         val aiType: String? = null,
         val aiVoiceGenerationApiRoute: String? = null,
         val aiVoiceMode: Boolean? = null,
+        val voice: String = "Umbriel",
         val apiKey: String? = null,
         val isAIOfflineModeAvailable: Boolean? = null
     )

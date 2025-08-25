@@ -1,17 +1,22 @@
 package brain.perceptions.speaking
 
-import javax.sound.sampled.AudioInputStream
+import java.io.ByteArrayInputStream
+
 
 class TTSGeminiOnlineEngine: TTSVoice {
 
 
-    override fun talk() {
-        speakStringToVoice()
+    override fun talk(byteArray: String) {
+        speakStringToVoice(byteArray)
     }
 
-    override fun speakStringToVoice() {
+    override fun speakStringToVoice(byteArray: String) {
         //TODO connect to gemini and speak
        // val a = AudioInputStream
+        println("________________________________________________")
+        println(byteArray)
+
+       // val bais = ByteArrayInputStream(audioBytes)
 
     }
 

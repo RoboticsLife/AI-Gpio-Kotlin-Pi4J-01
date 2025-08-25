@@ -1,6 +1,7 @@
 package brain.emitters
 
 import brain.ai.data.local.AIFlowDataModel
+import brain.ai.data.local.GeneratedVoiceResponseDataModel
 import brain.data.local.WeatherData
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -22,8 +23,8 @@ object NetworkEmitters {
     val aiEmitter = _aiEmitter.asSharedFlow()
 
     //AI Voice generator
-    private val _aiVoiceEmitter = MutableSharedFlow<Boolean?>(replay = 1) //TODO add model if need
-    val aiVoiceEmitter = _aiEmitter.asSharedFlow()
+    private val _aiVoiceEmitter = MutableSharedFlow<GeneratedVoiceResponseDataModel>(replay = 1)
+    val aiVoiceEmitter = _aiVoiceEmitter.asSharedFlow()
 
     fun emitWeatherResponse(weatherData: WeatherData) {
         CoroutineScope(Dispatchers.IO).launch {
@@ -37,9 +38,9 @@ object NetworkEmitters {
         }
     }
 
-    fun emitAIVoiceGeneratorResponse(wasPlayed: Boolean) {
+    fun emitAIVoiceGeneratorResponse(model: GeneratedVoiceResponseDataModel) {
         CoroutineScope(Dispatchers.IO).launch {
-            _aiVoiceEmitter.emit(wasPlayed)
+            _aiVoiceEmitter.emit(model)
         }
     }
 }

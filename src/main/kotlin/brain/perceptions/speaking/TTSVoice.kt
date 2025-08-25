@@ -2,5 +2,5 @@ package brain.perceptions.speaking
 
 interface TTSVoice: Speak {
 
-    fun speakStringToVoice()
+    fun speakStringToVoice(byteArray: String)
 }
