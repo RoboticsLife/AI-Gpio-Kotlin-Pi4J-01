@@ -1,6 +1,8 @@
 package brain.perceptions.vision
 
-interface Vision {
+import brain.data.local.Configuration
+
+interface Vision{
 
     fun look(visionTypes: VisionTypes = VisionTypes.STATIC_IMAGE)
 

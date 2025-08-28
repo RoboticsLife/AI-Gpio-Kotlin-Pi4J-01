@@ -48,7 +48,7 @@ class RobotBrain: Brain {
 
     override fun build(avatar: Avatar): Brain {
         this.avatar = avatar
-        perceptions = RobotPerceptions()
+        perceptions = RobotPerceptions(avatar) //TODO /finish logic
         init()
         return this
     }
@@ -146,6 +146,7 @@ class RobotBrain: Brain {
                 val audioStream = generatedVoice.requestResponsePair.response?.firstOrNull()
                     ?.candidates?.firstOrNull()?.content?.parts?.firstOrNull()?.inlineData?.data
                 voice.talk(audioStream ?: "")
+
 
             }
         }

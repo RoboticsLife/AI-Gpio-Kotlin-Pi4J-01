@@ -33,7 +33,8 @@ suspend fun main(args: Array<String>) {
     console.println(pi4j.boardInfo().boardModel)
 
     //brain.lookUseAI("what do you see on this picture?")
-    brain.lookUseAI("what do you see on this picture?", params = AITextRequestParams(aiTextResponseLengthLimit = 10))
+    //brain.lookUseAI("what do you see on this picture?", params = AITextRequestParams(aiTextResponseLengthLimit = 10))
+   // brain.lookUseAI("what do you see on this picture?")
 
    // brain.askUseAI("How do you feel today?", params = AITextRequestParams(aiTextResponseLengthLimit = 20))
 
@@ -67,6 +68,8 @@ fun init() {
     configuration = Injector.getRuntimeConfiguration().getConfiguration("lesson01-ai.json")
     avatar = AvatarBuilder(pi4j, configuration).build()
     brain = BrainBuilder(avatar = avatar).build(BrainBuilder.Type.ROBOT)
+
+    println(configuration)
 }
  fun collectData() {
      val jobAICollector = CoroutineScope(Job() + Dispatchers.IO).launch {

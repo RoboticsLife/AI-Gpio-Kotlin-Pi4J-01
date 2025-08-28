@@ -19,6 +19,7 @@ data class Configuration(
     val displays: List<DisplayConfig?>? = null,
     val servos: List<ServoConfig?>? = null,
     val positionSensors: List<PositionSensorConfig?>? = null,
+    val cameras: List<Test.Camera?>? = null,
 ) {
     @JsonIgnoreProperties(ignoreUnknown = true)
     data class ButtonConfig(
@@ -96,4 +97,33 @@ data class Configuration(
         val dlpfCfg: Int? = null,
         val smplrtDiv: Int? = null,
     )
+
+    @JsonIgnoreProperties(ignoreUnknown = true)
+    data class Camera(
+        val cameraPosition: Int? = null,
+        val description: String? = null,
+        val imagePresets: List<ImagePreset?>? = null,
+        val isMovingEnable: Boolean? = null,
+        val model: String? = null,
+        val movingServoId: String? = null,
+        val name: String? = null,
+        val videoPresets: List<VideoPreset?>? = null
+    ) {
+        data class ImagePreset(
+            val height: Int? = null,
+            val name: String? = null,
+            val qualityLevel: Int? = null,
+            val resolutionName: String? = null,
+            val width: Int? = null
+        )
+
+        data class VideoPreset(
+            val height: Int? = null,
+            val maxFrameRate: Int? = null,
+            val name: String? = null,
+            val qualityLevel: Int? = null,
+            val resolutionName: String? = null,
+            val width: Int? = null
+        )
+    }
 }

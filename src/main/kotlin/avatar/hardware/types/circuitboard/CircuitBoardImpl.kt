@@ -5,6 +5,7 @@ import avatar.hardware.parts.basecomponents.Display
 import avatar.hardware.parts.basecomponents.DistanceSensor
 import avatar.hardware.parts.basecomponents.PositionSensor
 import avatar.hardware.parts.basecomponents.Servo
+import avatar.hardware.parts.camera.Camera
 import avatar.hardware.types.circuitboard.data.BodyCircuitBoard
 import com.pi4j.context.Context
 import kotlinx.coroutines.*
@@ -91,6 +92,10 @@ class CircuitBoardImpl(private val pi4J: Context, private val configuration: Con
                 }
             }
         }
+
+        //TODO init cameras
+        body.cameras.add(Camera())
+        body.cameras.first().recordPicture()
 
     }
 

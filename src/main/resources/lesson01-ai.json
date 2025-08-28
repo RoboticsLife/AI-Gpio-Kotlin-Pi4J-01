@@ -6,5 +6,86 @@
   "hardwareModel": "i2c",
   "hardwareTypeCode": 1,
   "hardwareModelCode": 1,
-  "customAiConfigName": "aiconfig.json"
+  "customAiConfigName": "aiconfig.json",
+
+  "cameras": [
+    {
+      "name": "Standard Raspberry Pi HD Camera",
+      "model": "SunFounder Rev:1.3",
+      "description": "5 mPixel sensor. HD video",
+      "cameraPosition": 1,
+      "isMovingEnable": false,
+      "movingServoId": "none",
+      "imagePresets": [
+        {
+          "name": "5mPixel",
+          "qualityLevel": 6,
+          "resolutionName": "5MegaPixel",
+          "width": 2592,
+          "height": 1944
+        },
+        {
+          "name": "1080p",
+          "qualityLevel": 5,
+          "resolutionName": "FullHD",
+          "width": 1920,
+          "height": 1080
+        },
+        {
+          "name": "960p",
+          "qualityLevel": 4,
+          "resolutionName": "960p",
+          "width": 1280,
+          "height": 960
+        },
+        {
+          "name": "720p",
+          "qualityLevel": 3,
+          "resolutionName": "HD",
+          "width": 1280,
+          "height": 720
+        },
+        {
+          "name": "640x480",
+          "qualityLevel": 2,
+          "resolutionName": "VGA",
+          "width": 640,
+          "height": 480
+        },
+        {
+          "name": "320x240",
+          "qualityLevel": 1,
+          "resolutionName": "QVGA",
+          "width": 320,
+          "height": 240
+        }
+      ],
+      "videoPresets": [
+        {
+          "name": "1080p",
+          "qualityLevel": 3,
+          "resolutionName": "FullHD",
+          "width": 1920,
+          "height": 1080,
+          "maxFrameRate": 30
+        },
+        {
+          "name": "720p",
+          "qualityLevel": 2,
+          "resolutionName": "HD",
+          "width": 1280,
+          "height": 720,
+          "maxFrameRate": 60
+        },
+        {
+          "name": "640x480",
+          "qualityLevel": 1,
+          "resolutionName": "VGA",
+          "width": 640,
+          "height": 480,
+          "maxFrameRate": 90
+        }
+      ]
+    }
+  ]
 }
