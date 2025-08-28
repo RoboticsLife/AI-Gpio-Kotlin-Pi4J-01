@@ -1,9 +1,12 @@
 package avatar.hardware.parts.camera
 
+import avatar.hardware.parts.basecomponents.Camera
 import java.io.BufferedReader
 import java.io.IOException
 import java.io.InputStreamReader
 import java.time.LocalDateTime
+
+//TODO rewrite as clean code to NativeCamera.kt
 
 /**
  * FHNW implementation of a camera, works with the raspberry-pi v2 and v3 camera module and
@@ -16,7 +19,7 @@ import java.time.LocalDateTime
  * It uses the rpicam-still and rpicam-vid bash commands. Those are pre-installed
  * on all raspbian-versions from Bookworm on.
  */
-class Camera : Component() {
+class CameraJava: Camera {
     /**
      * Constructor for using the picture and video functionality
      * calling the init function to test if a camera is active
@@ -39,13 +42,14 @@ class Camera : Component() {
     @JvmOverloads
     fun recordPicture(
         config: PicConfig = newPictureConfigBuilder()
-          //  .outputPath("/home/alik/Pictures/picam.jpg")
-            .outputPath("/picam.jpg")
+            .outputPath("/home/alik/Pictures/picam.jpg")
+         //   .outputPath("/picam.jpg")
             .build()
+      //  config: PicConfig
     ) {
         println("Trying to make a picture!!!")
 
-        logDebug("Taking Picture")
+       // logDebug("Taking Picture")
 
         val processBuilder = ProcessBuilder()
         processBuilder.command("bash", "-c", config.asCommand())
@@ -53,7 +57,7 @@ class Camera : Component() {
         try {
             callBash(processBuilder)
         } catch (e: Exception) {
-            logException("Camera: Error while taking picture: ", e)
+           // logException("Camera: Error while taking picture: ", e)
         }
     }
 
@@ -72,10 +76,13 @@ class Camera : Component() {
     fun recordVideo(
         config: VidConfig = newVidConfigBuilder()
             .outputPath("/home/alik/Videos/video.h264")
-            .recordTime(5000)
+            .encoding(VidEncoding.H264)
+            .recordTime(10000)
             .build()
     ) {
-        logDebug("Taking Video")
+       // logDebug("Taking Video")
+
+        println("recordVideo native CLASS!!!")
 
         val processBuilder = ProcessBuilder()
         processBuilder.command("bash", "-c", config.asCommand())
@@ -83,7 +90,7 @@ class Camera : Component() {
         try {
             callBash(processBuilder)
         } catch (e: Exception) {
-            logException("Camera: Error while taking video: ", e)
+         //   logException("Camera: Error while taking video: ", e)
         }
     }
 
@@ -107,9 +114,9 @@ class Camera : Component() {
         //exitCode 0 = No Errors
         val exitCode = process.waitFor()
         if (exitCode != 0) {
-            logError("Camera exited with error code : %s", exitCode)
+         //   logError("Camera exited with error code : %s", exitCode)
         } else {
-            logInfo("Camera finished successfully")
+         //   logInfo("Camera finished successfully")
         }
     }
 
@@ -118,7 +125,7 @@ class Camera : Component() {
      * will work
      */
     private fun init() {
-        logDebug("initialisation of camera")
+     //   logDebug("initialisation of camera")
 
         val processBuilder = ProcessBuilder()
         processBuilder.command("bash", "-c", "rpicam-still")
@@ -126,7 +133,7 @@ class Camera : Component() {
         try {
             callBash(processBuilder)
         } catch (e: Exception) {
-            logException("Camera: Error at initialisation: ", e)
+        //    logException("Camera: Error at initialisation: ", e)
         }
     }
 
@@ -309,7 +316,7 @@ class Camera : Component() {
             var delay = 0
             var width = 1920
             var height = 1080
-            var quality = 10
+            var quality = 70
             var encoding: PicEncoding? = PicEncoding.JPG
             var disablePreview = false
             var allowFullscreenPreview = false

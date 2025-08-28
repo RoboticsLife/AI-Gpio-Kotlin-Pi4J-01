@@ -7,7 +7,7 @@ import avatar.hardware.parts.basecomponents.Display
 import avatar.hardware.parts.basecomponents.DistanceSensor
 import avatar.hardware.parts.basecomponents.PositionSensor
 import avatar.hardware.parts.basecomponents.Servo
-import avatar.hardware.parts.camera.Camera
+import avatar.hardware.parts.camera.CameraJava
 
 data class BodyCircuitBoard(
     override var type: HardwareTypes.Type = HardwareTypes.Type.CIRCUIT_BOARD,
@@ -18,7 +18,7 @@ data class BodyCircuitBoard(
     val displays: MutableList<Display> = mutableListOf(),
     val servos: MutableList<Servo> = mutableListOf(),
     val positionSensors: MutableList<PositionSensor> = mutableListOf(),
-    val cameras: MutableList<Camera> = mutableListOf()
+    val cameras: MutableList<CameraJava> = mutableListOf()
     //TODO: Add hardware parts if need
 
 ): BodyPrototype()

@@ -12,6 +12,7 @@ import kotlinx.coroutines.*
 import brain.data.local.Configuration
 import network.aiservice.ollama.data.OllamaGenerateResponse
 import runtime.setup.Injector
+import runtime.setup.Settings
 
 /**
  * LESSON 1: AI integration
@@ -32,14 +33,20 @@ suspend fun main(args: Array<String>) {
     //Print out
     console.println(pi4j.boardInfo().boardModel)
 
-    //brain.lookUseAI("what do you see on this picture?")
+    val dd =  Settings.Camera.Type.NATIVE
+    val ss = Settings.Camera.ImageResolutions.FIVE_MEGA_PIXELS
+    val sss = Settings.Camera.VideoResolutions.HD_720P
+
+  //  brain.lookUseAI("what do you see on this picture?")
     //brain.lookUseAI("what do you see on this picture?", params = AITextRequestParams(aiTextResponseLengthLimit = 10))
    // brain.lookUseAI("what do you see on this picture?")
 
    // brain.askUseAI("How do you feel today?", params = AITextRequestParams(aiTextResponseLengthLimit = 20))
 
    // delay(5000)
-    brain.generateVoiceFromString("try it now")
+ //   brain.generateVoiceFromString("try it now")
+
+    brain.perceptions.vision.look()
 
    // delay(3000)
   //  brain.askUseAI("What is the weather in toronto today?")

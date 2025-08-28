@@ -13,9 +13,12 @@
       "name": "Standard Raspberry Pi HD Camera",
       "model": "SunFounder Rev:1.3",
       "description": "5 mPixel sensor. HD video",
+      "type": "native",
       "cameraPosition": 1,
       "isMovingEnable": false,
       "movingServoId": "none",
+      "imageStorageAbsoluteOutputPath": "/home/alik/Pictures/",
+      "videoStorageAbsoluteOutputPath": "/home/alik/Videos/",
       "imagePresets": [
         {
           "name": "5mPixel",

@@ -5,7 +5,8 @@ import avatar.hardware.parts.basecomponents.Display
 import avatar.hardware.parts.basecomponents.DistanceSensor
 import avatar.hardware.parts.basecomponents.PositionSensor
 import avatar.hardware.parts.basecomponents.Servo
-import avatar.hardware.parts.camera.Camera
+import avatar.hardware.parts.camera.CameraJava
+import avatar.hardware.parts.camera.CameraJava.PicConfig
 import avatar.hardware.types.circuitboard.data.BodyCircuitBoard
 import com.pi4j.context.Context
 import kotlinx.coroutines.*
@@ -94,8 +95,36 @@ class CircuitBoardImpl(private val pi4J: Context, private val configuration: Con
         }
 
         //TODO init cameras
-        body.cameras.add(Camera())
-        body.cameras.first().recordPicture()
+        body.cameras.add(CameraJava())
+
+
+
+
+        val dd = CoroutineScope(Job() + Dispatchers.IO).launch {
+            val config = PicConfig.Builder()
+                .outputPath("/home/alik/Pictures/cam.jpg")
+                .delay(3000)
+                .disablePreview(true)
+                .encoding(CameraJava.PicEncoding.JPG)
+                .useDate(true)
+                .quality(93)
+                .width(1280)
+                .height(800)
+                .build()
+
+            // body.cameras.first().recordPicture()
+          /////  body.cameras.first().recordVideo()
+
+          //  delay(2000)
+            //body.cameras.first().recordPicture(config = config)
+          //  body.cameras.first().recordPicture()
+          //  delay(4000)
+          //  body.cameras.first().recordPicture()
+
+
+
+
+        }
 
     }
 

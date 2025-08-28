@@ -75,10 +75,10 @@ class RobotBrain: Brain {
         val config = aiConfig.additionalAIServices?.first { it?.aiType == "voiceGenerator"}
         if (config != null) {
             aiVoiceAssistantService = GeminiVoiceAssistantServiceImpl(config)
-            voice = TTSGeminiOnlineEngine()
+            voice = TTSGeminiOnlineEngine(avatar)
         } else {
             aiVoiceAssistantService = GeminiVoiceAssistantServiceImpl(AIConfiguration.AdditionalAIService())
-            voice = TTSGeminiOnlineEngine()
+            voice = TTSGeminiOnlineEngine(avatar)
         }
     }
 
@@ -114,6 +114,11 @@ class RobotBrain: Brain {
 
     override fun generateVoiceFromString(text: String) {
         aiVoiceAssistantService.convertStringToSoundSource(text)
+    }
+
+    override fun getPicture() {
+        //TODO tests
+        perceptions.vision.look()
     }
 
     private fun subscribeToDistanceEmitters(sensorPosition: Int? = null, loggingPeriodInMillis: Long = 1000) {

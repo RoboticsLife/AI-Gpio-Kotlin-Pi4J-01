@@ -16,4 +16,60 @@ object Settings {
     const val NETWORK_OKHTTP_DEFAULT_READ_TIMEOUT_SEC = 120L
     const val NETWORK_OKHTTP_DEFAULT_CONNECT_TIMEOUT_SEC = 120L
     const val NETWORK_OKHTTP_DEFAULT_WRITE_TIMEOUT_SEC = 120L
+
+    data class Camera(
+        val ss: Type = Type.NATIVE,
+        val className: String = "Camera"
+    ) {
+
+       enum class Type {
+           NATIVE,
+           IP,
+           USB,
+           REMOTE;
+
+           override fun toString(): String {
+               return when (this) {
+                   NATIVE -> "native"
+                   IP -> "ip"
+                   USB -> "usb"
+                   REMOTE -> "remote"
+               }
+           }
+       }
+
+        enum class ImageResolutions {
+            FIVE_MEGA_PIXELS,
+            FULL_HD_1080P,
+            SEMI_FULL_HD_960P,
+            HD_720P,
+            VGA,
+            QVGA;
+
+            override fun toString(): String {
+                return when (this) {
+                    FIVE_MEGA_PIXELS -> "5MegaPixel"
+                    FULL_HD_1080P -> "FullHD"
+                    SEMI_FULL_HD_960P -> "960p"
+                    HD_720P -> "HD"
+                    VGA -> "VGA"
+                    QVGA -> "QVGA"
+                    }
+            }
+        }
+
+        enum class VideoResolutions {
+            FULL_HD_1080P,
+            HD_720P,
+            VGA;
+
+            override fun toString(): String {
+                return when (this) {
+                    FULL_HD_1080P -> "FullHD"
+                    HD_720P -> "HD"
+                    VGA -> "VGA"
+                }
+            }
+        }
+    }
 }

@@ -5,5 +5,5 @@ import brain.perceptions.vision.Vision
 interface Perceptions {
 
     val vision: Vision
-    //TODO add others
+    //TODO add others (aka hearing...)
 }

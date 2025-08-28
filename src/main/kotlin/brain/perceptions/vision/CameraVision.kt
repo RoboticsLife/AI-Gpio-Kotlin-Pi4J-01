@@ -1,17 +1,32 @@
 package brain.perceptions.vision
 
 import avatar.Avatar
+import avatar.hardware.HardwareTypes
+import avatar.hardware.types.circuitboard.data.BodyCircuitBoard
 import brain.perceptions.vision.Vision.VisionTypes
 
-class CameraVision(avatar: Avatar) : Vision {
+class CameraVision(val avatar: Avatar) : Vision {
 
-    init {
-
-    }
 
 
     override fun look(visionTypes: VisionTypes) {
-        //TODO
+        println("*********")
+        (avatar.body.body as? BodyCircuitBoard)?.cameras?.first()?.recordPicture()
+
+    /*    when(avatar.type) {
+            HardwareTypes.Type.CIRCUIT_BOARD -> {
+                avatar.body as BodyCircuitBoard
+
+            }
+            else -> {
+                //TODO
+            }
+        }
+      */
+     //   if (avatar.type == HardwareTypes.Type.CIRCUIT_BOARD) {
+      //      (avatar.body as BodyCircuitBoard).cameras.first().recordVideo()
+       // }
+
     }
 
 

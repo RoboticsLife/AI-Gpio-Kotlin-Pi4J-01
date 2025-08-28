@@ -1,9 +1,10 @@
 package brain.perceptions.speaking
 
+import avatar.Avatar
 import java.io.ByteArrayInputStream
 
 
-class TTSGeminiOnlineEngine: TTSVoice {
+class TTSGeminiOnlineEngine(avatar: Avatar): TTSVoice {
 
 
     override fun talk(byteArray: String) {
